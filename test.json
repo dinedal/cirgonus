@@ -1,5 +1,12 @@
 {
-  "Plugins": {
-    "load_average": null
-  }
+  "Plugins": [
+    {
+      "Name": "load_average",
+      "Params": null
+    },
+    {
+      "Name": "cpu_usage",
+      "Params": null
+    }
+  ]
 }

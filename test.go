@@ -5,15 +5,23 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"plugins/cpu_usage"
 	"plugins/load_average"
+	"time"
 )
 
 var plugins = map[string]func(interface{}) interface{}{
 	"load_average": load_average.GetMetric,
+	"cpu_usage":    cpu_usage.GetMetric,
+}
+
+type ConfigMap struct {
+	Name   string
+	Params interface{}
 }
 
 type CirconusConfig struct {
-	Plugins map[string]interface{}
+	Plugins []ConfigMap
 }
 
 type MeterResult struct {
@@ -50,13 +58,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	for name, params := range config.Plugins {
-		_, ok := plugins[name]
+	for {
+		for _, item := range config.Plugins {
+			_, ok := plugins[item.Name]
 
-		if ok {
-			res, _ := json.Marshal(MeterResult{Metric: name, Value: plugins[name](params)})
+			if ok {
+				res, _ := json.Marshal(MeterResult{Metric: item.Name, Value: plugins[item.Name](item.Params)})
 
-			fmt.Println(string(res))
+				fmt.Println(string(res))
+			}
 		}
+
+		time.Sleep(1 * time.Second)
 	}
 }
