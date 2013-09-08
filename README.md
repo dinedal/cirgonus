@@ -23,15 +23,13 @@ curl http://ubuntu.local:8000
 Will return all the metrics:
 
 ```json
-[{"Metric":"tha load","Type":"load_average","Value":[0,0.01,0.05]},{"Metric":"mem_usage","Type":"mem_usage","Value":{"Free":850948,"Total":1011956,"Used":161008}},{"Metric":"cpu_usage","Type":"cpu_usage","Value":[4,0]},{"Metric":"echo hi","Type":"command","Value":{"hi":1}},{"Metric":"echo hello","Type":"command","Value":{"hello":1}}]
+{"cpu_usage":{"Type":"cpu_usage","Value":[0,4]},"echo hello":{"Type":"command","Value":{"hello":1}},"echo hi":{"Type":"command","Value":{"hi":1}},"mem_usage":{"Type":"mem_usage","Value":{"Free":845040,"Total":1011956,"Used":166916}},"tha load":{"Type":"load_average","Value":[0,0.01,0.05]}}
 ```
 
 ## Returned Metrics Format
 
-An array of objects that have three elements:
+An object of objects, keyed by the name of the metric, that have two elements:
 
-* Metric -- this is the "Name" provided in the configuration file, or Type if
-  Name is omitted.
 * Type -- the type of metrics plugin.
 * Value -- an arbitrary json-formatted value, dependent on the plugin (and in
   the case of `command`, the output of the command.)
@@ -73,11 +71,11 @@ Returns an object with these parameters:
 
 ### cpu\_usage
 
-This is a two element tuple -- the first is the number of cpus (as measured by
-linux -- so hyperthreading cores are 2 cpus), and the second is a decimal value
-which indicates how much of that is in use. For example:
+This is a two element tuple -- the first is a decimal value which indicates how
+much of that is in use, and the second is the number of cpus (as measured by
+linux -- so hyperthreading cores are 2 cpus). For example:
 
-[2, 1.5] - two cores, 150% cpu usage (1 and a half cores are in use)
+[1.5, 2] - two cores, 150% cpu usage (1 and a half cores are in use)
 
 ### command
 
@@ -87,17 +85,18 @@ output from it which it builds into the result.
 An example from `test.json`:
 
 ```json
-    {
-      "Name": "echo hi",
-      "Type": "command",
-      "Params": [ "echo", "{\"hi\": 1}" ]
-    }
+{
+  "echo hi": {
+    "Type": "command",
+    "Params": [ "echo", "{\"hi\": 1}" ]
+  }
+}
 ```
 
 This results in this MeterResult:
 
 ```json
-{"Metric":"echo hi","Type":"command","Value":{"hi":1}}
+{ "echo hi": {"Type":"command","Value":{"hi":1}} }
 ```
 
 Note the value has been injected directly into the json form so that Circonus
