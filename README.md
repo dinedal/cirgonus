@@ -118,6 +118,9 @@ linux -- so hyperthreading cores are 2 cpus). For example:
 
 [1.5, 2] - two cores, 150% cpu usage (1 and a half cores are in use)
 
+Note that due to the way jiffies are treated, this plugin imposes a minimum
+granularity of 1 second.
+
 ### command
 
 This is the catch-all. The command plugin runs a command, and accepts json
