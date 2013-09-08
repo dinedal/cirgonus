@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"plugins/command"
 	"plugins/cpu_usage"
 	"plugins/load_average"
 	"plugins/mem_usage"
-	"plugins/shell"
 	"time"
 )
 
@@ -16,7 +16,7 @@ var plugins = map[string]func(interface{}) interface{}{
 	"load_average": load_average.GetMetric,
 	"cpu_usage":    cpu_usage.GetMetric,
 	"mem_usage":    mem_usage.GetMetric,
-	"shell":        shell.GetMetric,
+	"command":      command.GetMetric,
 }
 
 type ConfigMap struct {

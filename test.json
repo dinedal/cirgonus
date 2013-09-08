@@ -13,11 +13,11 @@
       "Params": null
     },
     {
-      "Name": "shell",
+      "Name": "command",
       "Params": [ "echo", "{\"hi\": 1}" ]
     },
     {
-      "Name": "shell",
+      "Name": "command",
       "Params": [ "echo", "{\"hello\": 1}" ]
     }
   ]
