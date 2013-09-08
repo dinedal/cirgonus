@@ -21,10 +21,6 @@ type MeterResult struct {
 	Value  interface{}
 }
 
-func run_plugin(plugin_name string, params interface{}) interface{} {
-	return nil
-}
-
 func load_config(config_file string) (cc CirconusConfig, err error) {
 	content, err := ioutil.ReadFile(config_file)
 
