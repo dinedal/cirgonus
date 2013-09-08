@@ -18,6 +18,10 @@
     "echo hello": {
       "Type": "command",
       "Params": [ "echo", "{\"hello\": 1}" ]
+    },
+    "eth0 usage": {
+      "Type": "net_usage",
+      "Params": "eth0"
     }
   }
 }

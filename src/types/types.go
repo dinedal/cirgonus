@@ -5,6 +5,7 @@ import (
 	"plugins/cpu_usage"
 	"plugins/load_average"
 	"plugins/mem_usage"
+	"plugins/net_usage"
 )
 
 var Plugins = map[string]func(interface{}) interface{}{
@@ -12,6 +13,7 @@ var Plugins = map[string]func(interface{}) interface{}{
 	"cpu_usage":    cpu_usage.GetMetric,
 	"mem_usage":    mem_usage.GetMetric,
 	"command":      command.GetMetric,
+	"net_usage":    net_usage.GetMetric,
 }
 
 type ConfigMap struct {

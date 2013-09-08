@@ -25,6 +25,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			out, err := json.Marshal(query.AllPlugins(wh.Config))
 
 			if err != nil {
+				/* FIXME log */
 				w.WriteHeader(500)
 			} else {
 				w.Write(out)
