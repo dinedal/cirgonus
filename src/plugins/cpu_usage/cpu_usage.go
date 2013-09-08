@@ -21,6 +21,7 @@ func get_jiffies() (jiffies int64, cpus int64) {
 
 	if err != nil {
 		fmt.Println("While processing the cpu_usage package:", err)
+		return 0, 0
 	}
 
 	lines := strings.Split(string(content), "\n")
@@ -45,6 +46,7 @@ func get_jiffies() (jiffies int64, cpus int64) {
 
 				if err != nil {
 					fmt.Println("Could not convert integer from string while processing cpu_usage: ", parts[x])
+					return 0, 0
 				}
 
 				jiffies += int64(part)
