@@ -5,6 +5,10 @@
       "Params": null
     },
     {
+      "Name": "mem_usage",
+      "Params": null
+    },
+    {
       "Name": "cpu_usage",
       "Params": null
     }
