@@ -1,7 +1,8 @@
 {
   "Plugins": [
     {
-      "Name": "load_average",
+      "Name": "tha load",
+      "Type": "load_average",
       "Params": null
     },
     {
@@ -13,11 +14,13 @@
       "Params": null
     },
     {
-      "Name": "command",
+      "Name": "echo hi",
+      "Type": "command",
       "Params": [ "echo", "{\"hi\": 1}" ]
     },
     {
-      "Name": "command",
+      "Name": "echo hello",
+      "Type": "command",
       "Params": [ "echo", "{\"hello\": 1}" ]
     }
   ]

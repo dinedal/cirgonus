@@ -21,6 +21,7 @@ var plugins = map[string]func(interface{}) interface{}{
 
 type ConfigMap struct {
 	Name   string
+	Type   interface{}
 	Params interface{}
 }
 
@@ -30,6 +31,7 @@ type CirconusConfig struct {
 
 type MeterResult struct {
 	Metric string
+	Type   string
 	Value  interface{}
 }
 
@@ -41,6 +43,13 @@ func load_config(config_file string) (cc CirconusConfig, err error) {
 	}
 
 	err = json.Unmarshal(content, &cc)
+
+	for x := 0; x < len(cc.Plugins); x++ {
+		item := &cc.Plugins[x]
+		if item.Type == nil {
+			item.Type = item.Name
+		}
+	}
 
 	return cc, err
 }
@@ -64,10 +73,10 @@ func main() {
 
 	for {
 		for _, item := range config.Plugins {
-			_, ok := plugins[item.Name]
+			_, ok := plugins[item.Type.(string)]
 
 			if ok {
-				res, _ := json.Marshal(MeterResult{Metric: item.Name, Value: plugins[item.Name](item.Params)})
+				res, _ := json.Marshal(MeterResult{Metric: item.Name, Type: item.Type.(string), Value: plugins[item.Type.(string)](item.Params)})
 
 				fmt.Println(string(res))
 			}
