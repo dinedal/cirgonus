@@ -11,10 +11,22 @@ Cirgonus does not need to be run as root to collect its metrics.
 
 ## Querying
 
-Currently querying is only limited to the root path and returns all metrics.
-Expect this to be resolved soon.
+* GET querying the root will return all metrics.
+* POST querying with a `{ "Name": "metric name" }` json object will return just that metric.
 
 e.g., if Cirgonus is running on `ubuntu.local:8000`:
+
+```
+curl http://ubuntu.local:8000 -d '{ "Name": "tha load" }'
+```
+
+Will return just the "tha load" metric:
+
+```json
+{"Type":"load_average","Value":[0,0.01,0.05]}
+```
+
+Otherwise a plain GET to the root:
 
 ```
 curl http://ubuntu.local:8000
