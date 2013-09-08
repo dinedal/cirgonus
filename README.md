@@ -20,7 +20,11 @@ e.g., if Cirgonus is running on `ubuntu.local:8000`:
 curl http://ubuntu.local:8000
 ```
 
-Will return all the metrics.
+Will return all the metrics:
+
+```json
+[{"Metric":"tha load","Type":"load_average","Value":[0,0.01,0.05]},{"Metric":"mem_usage","Type":"mem_usage","Value":{"Free":850948,"Total":1011956,"Used":161008}},{"Metric":"cpu_usage","Type":"cpu_usage","Value":[4,0]},{"Metric":"echo hi","Type":"command","Value":{"hi":1}},{"Metric":"echo hello","Type":"command","Value":{"hello":1}}]
+```
 
 ## Returned Metrics Format
 
