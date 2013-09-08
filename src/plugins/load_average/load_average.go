@@ -5,7 +5,9 @@ package load_average
 */
 import "C"
 
-func GetMetric() (loadavg [3]C.double) {
+func GetMetric(params interface{}) interface{} {
+	var loadavg [3]C.double
+
 	C.getloadavg(&loadavg[0], 3)
 
 	return loadavg
