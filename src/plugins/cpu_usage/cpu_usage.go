@@ -73,5 +73,5 @@ func getJiffyDiff() (int64, int64) {
 
 func GetMetric(params interface{}) interface{} {
 	diff, cpus := getJiffyDiff()
-	return [2]float64{float64(cpus), (float64(diff) / float64(C.get_hz()))}
+	return [2]float64{(float64(diff) / float64(C.get_hz())), float64(cpus)}
 }

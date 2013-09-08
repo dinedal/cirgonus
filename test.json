@@ -1,28 +1,23 @@
 {
   "Listen": ":8000",
-  "Plugins": [
-    {
-      "Name": "tha load",
+  "Plugins": {
+    "tha load": {
       "Type": "load_average",
       "Params": null
     },
-    {
-      "Name": "mem_usage",
+    "mem_usage": {
       "Params": null
     },
-    {
-      "Name": "cpu_usage",
+    "cpu_usage": {
       "Params": null
     },
-    {
-      "Name": "echo hi",
+    "echo hi": {
       "Type": "command",
       "Params": [ "echo", "{\"hi\": 1}" ]
     },
-    {
-      "Name": "echo hello",
+    "echo hello": {
       "Type": "command",
       "Params": [ "echo", "{\"hello\": 1}" ]
     }
-  ]
+  }
 }

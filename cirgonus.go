@@ -18,10 +18,13 @@ func loadConfig(configFile string) (cc types.CirconusConfig, err error) {
 
 	err = json.Unmarshal(content, &cc)
 
-	for x := 0; x < len(cc.Plugins); x++ {
-		item := &cc.Plugins[x]
-		if item.Type == nil {
-			item.Type = item.Name
+	for k := range cc.Plugins {
+		if cc.Plugins[k].Type == nil {
+			old := cc.Plugins[k]
+			cc.Plugins[k] = types.ConfigMap{
+				Type:   k,
+				Params: old.Params,
+			}
 		}
 	}
 

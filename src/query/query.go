@@ -4,19 +4,28 @@ import (
 	"types"
 )
 
-func AllPlugins(config types.CirconusConfig) []types.MeterResult {
-	retval := make([]types.MeterResult, len(config.Plugins))
+func Plugin(name string, config types.CirconusConfig) types.MeterResult {
+	item, ok := config.Plugins[name]
 
-	for x, item := range config.Plugins {
+	if ok {
 		_, ok := types.Plugins[item.Type.(string)]
 
 		if ok {
-			retval[x] = types.MeterResult{
-				Metric: item.Name,
-				Type:   item.Type.(string),
-				Value:  types.Plugins[item.Type.(string)](item.Params),
+			return types.MeterResult{
+				Type:  item.Type.(string),
+				Value: types.Plugins[item.Type.(string)](item.Params),
 			}
 		}
+	}
+
+	return types.MeterResult{}
+}
+
+func AllPlugins(config types.CirconusConfig) map[string]types.MeterResult {
+	retval := make(map[string]types.MeterResult)
+
+	for key, _ := range config.Plugins {
+		retval[key] = Plugin(key, config)
 	}
 
 	return retval

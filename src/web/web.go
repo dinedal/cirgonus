@@ -14,14 +14,24 @@ type WebHandler struct {
 func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	out, err := json.Marshal(query.AllPlugins(wh.Config))
+	switch r.Method {
+	case "GET":
+		{
+			out, err := json.Marshal(query.AllPlugins(wh.Config))
 
-	if err != nil {
-		w.WriteHeader(500)
-		return
+			if err != nil {
+				w.WriteHeader(500)
+			} else {
+				w.Write(out)
+			}
+
+			return
+		}
+	case "POST":
+		{
+
+		}
 	}
-
-	w.Write(out)
 }
 
 func Start(listen string, config types.CirconusConfig) error {

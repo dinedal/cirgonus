@@ -15,18 +15,16 @@ var Plugins = map[string]func(interface{}) interface{}{
 }
 
 type ConfigMap struct {
-	Name   string
 	Type   interface{}
 	Params interface{}
 }
 
 type CirconusConfig struct {
 	Listen  string
-	Plugins []ConfigMap
+	Plugins map[string]ConfigMap
 }
 
 type MeterResult struct {
-	Metric string
-	Type   string
-	Value  interface{}
+	Type  string
+	Value interface{}
 }
