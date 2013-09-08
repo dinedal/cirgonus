@@ -43,21 +43,20 @@ func check_usage() {
 func main() {
 	check_usage()
 
-	fmt.Println(os.Args[1])
 	config, err := load_config(os.Args[1])
+
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error while loading config file:", err)
 		os.Exit(1)
 	}
-	res, _ := json.Marshal(config)
-	fmt.Println(string(res))
 
 	for name, params := range config.Plugins {
 		_, ok := plugins[name]
+
 		if ok {
-			res, _ = json.Marshal(MeterResult{Metric: name, Value: plugins[name](params)})
+			res, _ := json.Marshal(MeterResult{Metric: name, Value: plugins[name](params)})
+
 			fmt.Println(string(res))
 		}
 	}
-
 }
