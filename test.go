@@ -61,6 +61,22 @@ func check_usage() {
 	}
 }
 
+func query_all_plugins(config CirconusConfig) []string {
+	retval := make([]string, len(config.Plugins))
+
+	for x, item := range config.Plugins {
+		_, ok := plugins[item.Type.(string)]
+
+		if ok {
+			res, _ := json.Marshal(MeterResult{Metric: item.Name, Type: item.Type.(string), Value: plugins[item.Type.(string)](item.Params)})
+
+			retval[x] = string(res)
+		}
+	}
+
+	return retval
+}
+
 func main() {
 	check_usage()
 
@@ -72,16 +88,9 @@ func main() {
 	}
 
 	for {
-		for _, item := range config.Plugins {
-			_, ok := plugins[item.Type.(string)]
-
-			if ok {
-				res, _ := json.Marshal(MeterResult{Metric: item.Name, Type: item.Type.(string), Value: plugins[item.Type.(string)](item.Params)})
-
-				fmt.Println(string(res))
-			}
+		for _, item := range query_all_plugins(config) {
+			fmt.Println(item)
 		}
-
 		time.Sleep(1 * time.Second)
 	}
 }
