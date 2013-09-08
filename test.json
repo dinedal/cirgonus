@@ -11,6 +11,14 @@
     {
       "Name": "cpu_usage",
       "Params": null
+    },
+    {
+      "Name": "shell",
+      "Params": [ "echo", "{\"hi\": 1}" ]
+    },
+    {
+      "Name": "shell",
+      "Params": [ "echo", "{\"hello\": 1}" ]
     }
   ]
 }
