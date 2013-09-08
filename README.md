@@ -12,7 +12,7 @@ Cirgonus does not need to be run as root to collect its metrics.
 ## Querying
 
 Currently querying is only limited to the root path and returns all metrics.
-Expect this to be resolved likely before anyone but me reads this message.
+Expect this to be resolved soon.
 
 e.g., if Cirgonus is running on `ubuntu.local:8000`:
 
