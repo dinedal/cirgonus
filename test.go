@@ -5,38 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"plugins/command"
-	"plugins/cpu_usage"
-	"plugins/load_average"
-	"plugins/mem_usage"
-	"time"
+	"types"
+	"web"
 )
 
-var plugins = map[string]func(interface{}) interface{}{
-	"load_average": load_average.GetMetric,
-	"cpu_usage":    cpu_usage.GetMetric,
-	"mem_usage":    mem_usage.GetMetric,
-	"command":      command.GetMetric,
-}
-
-type ConfigMap struct {
-	Name   string
-	Type   interface{}
-	Params interface{}
-}
-
-type CirconusConfig struct {
-	Plugins []ConfigMap
-}
-
-type MeterResult struct {
-	Metric string
-	Type   string
-	Value  interface{}
-}
-
-func load_config(config_file string) (cc CirconusConfig, err error) {
-	content, err := ioutil.ReadFile(config_file)
+func loadConfig(configFile string) (cc types.CirconusConfig, err error) {
+	content, err := ioutil.ReadFile(configFile)
 
 	if err != nil {
 		return cc, err
@@ -54,43 +28,22 @@ func load_config(config_file string) (cc CirconusConfig, err error) {
 	return cc, err
 }
 
-func check_usage() {
+func checkUsage() {
 	if len(os.Args) < 2 {
 		fmt.Println("usage:", os.Args[0], "<config file>")
 		os.Exit(2)
 	}
 }
 
-func query_all_plugins(config CirconusConfig) []string {
-	retval := make([]string, len(config.Plugins))
-
-	for x, item := range config.Plugins {
-		_, ok := plugins[item.Type.(string)]
-
-		if ok {
-			res, _ := json.Marshal(MeterResult{Metric: item.Name, Type: item.Type.(string), Value: plugins[item.Type.(string)](item.Params)})
-
-			retval[x] = string(res)
-		}
-	}
-
-	return retval
-}
-
 func main() {
-	check_usage()
+	checkUsage()
 
-	config, err := load_config(os.Args[1])
+	config, err := loadConfig(os.Args[1])
 
 	if err != nil {
 		fmt.Println("Error while loading config file:", err)
 		os.Exit(1)
 	}
 
-	for {
-		for _, item := range query_all_plugins(config) {
-			fmt.Println(item)
-		}
-		time.Sleep(1 * time.Second)
-	}
+	web.Start(":8000", config)
 }
