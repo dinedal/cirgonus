@@ -45,5 +45,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	web.Start(":8000", config)
+	web.Start(config.Listen, config)
 }

@@ -21,6 +21,7 @@ type ConfigMap struct {
 }
 
 type CirconusConfig struct {
+	Listen  string
 	Plugins []ConfigMap
 }
 
