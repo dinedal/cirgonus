@@ -121,6 +121,29 @@ linux -- so hyperthreading cores are 2 cpus). For example:
 Note that due to the way jiffies are treated, this plugin imposes a minimum
 granularity of 1 second.
 
+### net\_usage
+
+This command gathers interface statistics between the time it was last polled
+for information. The parameter (A single string) is the name of the interface.
+
+Results (hopefully self-explanatory):
+
+```json
+{
+  "eth0 usage": {
+    "Type": "net_usage",
+    "Value": {
+      "Received (Bytes)": 2406,
+      "Received (Packets)": 25,
+      "Reception Errors": 0,
+      "Transmission Errors": 0,
+      "Transmitted (Bytes)": 1749,
+      "Transmitted (Packets)": 13
+    }
+  }
+}
+```
+
 ### command
 
 This is the catch-all. The command plugin runs a command, and accepts json
