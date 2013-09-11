@@ -1,10 +1,12 @@
 package web
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"query"
+	"strings"
 	"types"
 )
 
@@ -16,8 +18,41 @@ type WebHandler struct {
 	Config types.CirconusConfig
 }
 
+func (wh *WebHandler) showUnauthorized(w http.ResponseWriter) {
+	/* FIXME log */
+	w.Header().Add("WWW-Authenticate", "Basic realm=\"cirgonus\"")
+	w.WriteHeader(401)
+}
+
+func (wh *WebHandler) handleAuth(r *http.Request) bool {
+	header, ok := r.Header["Authorization"]
+
+	if !ok {
+		return false
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(strings.Split(header[0], " ")[1])
+
+	if err != nil {
+		return false
+	}
+
+	credentials := strings.Split(string(decoded), ":")
+
+	if credentials[0] != wh.Config.Username || credentials[1] != wh.Config.Password {
+		return false
+	}
+
+	return true
+}
+
 func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+
+	if !wh.handleAuth(r) {
+		wh.showUnauthorized(w)
+		return
+	}
 
 	switch r.Method {
 	case "GET":

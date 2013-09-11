@@ -1,5 +1,7 @@
 {
   "Listen": ":8000",
+  "Username": "cirgonus",
+  "Password": "cirgonus",
   "Plugins": {
     "tha load": {
       "Type": "load_average",

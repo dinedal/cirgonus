@@ -22,8 +22,10 @@ type ConfigMap struct {
 }
 
 type CirconusConfig struct {
-	Listen  string
-	Plugins map[string]ConfigMap
+	Listen   string
+	Username string
+	Password string
+	Plugins  map[string]ConfigMap
 }
 
 type MeterResult struct {
