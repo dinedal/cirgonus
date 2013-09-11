@@ -20,7 +20,7 @@ var file_map = map[string]string{
 	"tx_packets": "Transmitted (Packets)",
 }
 
-var last_metrics map[string]uint64
+var last_metrics map[string]map[string]uint64
 var rwmutex sync.RWMutex
 
 func readFile(base_path string, metric string) (uint64, error) {
@@ -38,42 +38,55 @@ func readFile(base_path string, metric string) (uint64, error) {
 func GetMetric(params interface{}) interface{} {
 
 	new_metrics := false
+	device := params.(string)
 
 	if last_metrics == nil {
 		rwmutex.Lock()
-		last_metrics = make(map[string]uint64)
+		last_metrics = make(map[string]map[string]uint64)
+		new_metrics = true
+		rwmutex.Unlock()
+	}
+
+	if last_metrics[device] == nil {
+		rwmutex.Lock()
+		last_metrics[device] = make(map[string]uint64)
 		rwmutex.Unlock()
 		new_metrics = true
 	}
 
 	metrics := make(map[string]uint64)
 	difference := make(map[string]uint64)
-	device := params.(string)
 
 	base_path := fmt.Sprintf(file_pattern, device)
 
 	for fn, metric := range file_map {
-		result, err := readFile(base_path, fn)
-
-		if err == nil {
-			metrics[metric] = result
-		} else {
+		if new_metrics {
 			metrics[metric] = 0
+		} else {
+			result, err := readFile(base_path, fn)
+			if err == nil {
+				metrics[metric] = result
+			} else {
+				metrics[metric] = 0
+			}
 		}
 	}
 
 	for metric, value := range metrics {
 		if new_metrics {
 			difference[metric] = 0
+			rwmutex.Lock()
+			last_metrics[device][metric] = 0
+			rwmutex.Unlock()
 		} else {
 			rwmutex.RLock()
-			difference[metric] = value - last_metrics[metric]
+			difference[metric] = value - last_metrics[device][metric]
 			rwmutex.RUnlock()
+			rwmutex.Lock()
+			last_metrics[device][metric] = value
+			rwmutex.Unlock()
 		}
 
-		rwmutex.Lock()
-		last_metrics[metric] = value
-		rwmutex.Unlock()
 	}
 
 	return difference
