@@ -84,6 +84,8 @@ of how it should look.
 
 * Listen: `host:port` (host optional) designation on where the agent should
   listen.
+* Username: the username for basic authentication.
+* Password: the password for basic authentication.
 * Plugins: An array of plugin definitions. See `Plugins`.
 
 ## Plugins
