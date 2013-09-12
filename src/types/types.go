@@ -3,6 +3,7 @@ package types
 import (
 	"plugins/command"
 	"plugins/cpu_usage"
+	"plugins/io_usage"
 	"plugins/load_average"
 	"plugins/mem_usage"
 	"plugins/net_usage"
@@ -14,6 +15,7 @@ var Plugins = map[string]func(interface{}) interface{}{
 	"mem_usage":    mem_usage.GetMetric,
 	"command":      command.GetMetric,
 	"net_usage":    net_usage.GetMetric,
+	"io_usage":     io_usage.GetMetric,
 }
 
 type ConfigMap struct {
