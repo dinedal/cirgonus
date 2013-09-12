@@ -146,6 +146,36 @@ Results (hopefully self-explanatory):
 }
 ```
 
+### io\_usage
+
+Similar to `net_usage`, this computes the difference between polls. It provides
+a variety of IO statistics and works on both disk devices and partitions,
+including device mapper devices. Future patches will attempt to rein in other
+devices such as tmpfs and nfs.
+
+Results:
+
+```json
+{
+  "dm-0 usage": {
+    "Type": "io_usage",
+    "Value": {
+      "io time (ms)": 1768,
+      "iops in progress": 0,
+      "reads issued": 4513,
+      "reads merged": 0,
+      "sectors read": 36608,
+      "sectors written": 55456,
+      "time reading (ms)": 1688,
+      "time writing (ms)": 127156,
+      "weighted io time (ms)": 128844,
+      "writes completed": 5399,
+      "writes merged":0
+    }
+  }
+}
+```
+
 ### command
 
 This is the catch-all. The command plugin runs a command, and accepts json
