@@ -12,9 +12,8 @@ import (
 const DISKSTATS_FILE = "/proc/diskstats"
 
 const (
-	DEVICE_DISK      uint = iota
-	DEVICE_PARTITION      = iota
-	DEVICE_DM             = iota
+	DEVICE_DISK uint = iota
+	DEVICE_DM        = iota
 )
 
 const (
@@ -24,44 +23,22 @@ const (
 )
 
 var device_to_diskstat_id = map[uint]uint{
-	DEVICE_DISK:      8,
-	DEVICE_PARTITION: 8,
-	DEVICE_DM:        252,
+	DEVICE_DISK: 8,
+	DEVICE_DM:   252,
 }
 
-var diskstat_id_to_metric_name = map[uint][]string{
-	device_to_diskstat_id[DEVICE_PARTITION]: {
-		"reads issued",
-		"sectors read",
-		"writes issued",
-		"sectors written",
-	},
-	device_to_diskstat_id[DEVICE_DISK]: {
-		"reads issued",
-		"reads merged",
-		"sectors read",
-		"time reading (ms)",
-		"writes completed",
-		"writes merged",
-		"sectors written",
-		"time writing (ms)",
-		"iops in progress",
-		"io time (ms)",
-		"weighted io time (ms)",
-	},
-	device_to_diskstat_id[DEVICE_DM]: {
-		"reads issued",
-		"reads merged",
-		"sectors read",
-		"time reading (ms)",
-		"writes completed",
-		"writes merged",
-		"sectors written",
-		"time writing (ms)",
-		"iops in progress",
-		"io time (ms)",
-		"weighted io time (ms)",
-	},
+var metric_names = []string{
+	"reads issued",
+	"reads merged",
+	"sectors read",
+	"time reading (ms)",
+	"writes completed",
+	"writes merged",
+	"sectors written",
+	"time writing (ms)",
+	"iops in progress",
+	"io time (ms)",
+	"weighted io time (ms)",
 }
 
 var last_metrics map[string]map[string]uint64
@@ -74,12 +51,6 @@ func getDeviceType(device_name string) uint {
 
 	if matched {
 		return device_to_diskstat_id[DEVICE_DM]
-	}
-
-	matched, _ = regexp.Match("[0-9]+$", byte_dn)
-
-	if matched {
-		return device_to_diskstat_id[DEVICE_PARTITION]
 	}
 
 	return device_to_diskstat_id[DEVICE_DISK]
@@ -152,7 +123,7 @@ func getDiskMetrics(device string, device_type uint) (retval map[string]uint64, 
 		} else if uint(device_type_parsed) == device_type && parts[LINE_DEVICE] == device {
 			retval = make(map[string]uint64)
 
-			for i, key := range diskstat_id_to_metric_name[device_type] {
+			for i, key := range metric_names {
 				retval[key], err = strconv.ParseUint(parts[LINE_FIRST_METRIC+uint(i)], 10, 64)
 
 				if err != nil {

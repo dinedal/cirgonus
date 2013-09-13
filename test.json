@@ -25,9 +25,9 @@
       "Type": "net_usage",
       "Params": "eth0"
     },
-    "sda1 usage": {
+    "sda usage": {
       "Type": "io_usage",
-      "Params": "sda1"
+      "Params": "sda"
     },
     "dm-0 usage": {
       "Type": "io_usage",
