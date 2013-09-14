@@ -137,9 +137,7 @@ func GetMetric(params interface{}) interface{} {
 	difference := make(map[string]uint64)
 	device := params.(string)
 	device_type := getDeviceType(device)
-
 	new_metrics := initLastMetrics(device)
-
 	metrics, err := getDiskMetrics(device, device_type)
 
 	if err != nil {
