@@ -76,14 +76,10 @@ func initLastMetrics(device string) (new_metrics bool) {
 	return new_metrics
 }
 
-func writeMetric(device string, metric string, value uint64) (new_metrics bool) {
-	new_metrics = initLastMetrics(device)
-
+func writeMetric(device string, metric string, value uint64) {
 	rwmutex.Lock()
 	last_metrics[device][metric] = value
 	rwmutex.Unlock()
-
-	return new_metrics
 }
 
 func readMetric(device string, metric string) (value uint64) {
@@ -142,6 +138,8 @@ func GetMetric(params interface{}) interface{} {
 	device := params.(string)
 	device_type := getDeviceType(device)
 
+	new_metrics := initLastMetrics(device)
+
 	metrics, err := getDiskMetrics(device, device_type)
 
 	if err != nil {
@@ -149,7 +147,12 @@ func GetMetric(params interface{}) interface{} {
 	}
 
 	for metric, value := range metrics {
-		difference[metric] = value - readMetric(device, metric)
+		if new_metrics {
+			difference[metric] = 0
+		} else {
+			difference[metric] = value - readMetric(device, metric)
+		}
+
 		writeMetric(device, metric, value)
 	}
 
