@@ -29,8 +29,3 @@ type CirconusConfig struct {
 	Password string
 	Plugins  map[string]ConfigMap
 }
-
-type MeterResult struct {
-	Type  string
-	Value interface{}
-}
