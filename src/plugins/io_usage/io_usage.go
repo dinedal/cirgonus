@@ -83,10 +83,6 @@ func writeMetric(device string, metric string, value uint64) {
 }
 
 func readMetric(device string, metric string) (value uint64) {
-	if initLastMetrics(device) {
-		return 0
-	}
-
 	rwmutex.RLock()
 	value = last_metrics[device][metric]
 	rwmutex.RUnlock()
