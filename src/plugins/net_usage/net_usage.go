@@ -43,8 +43,8 @@ func GetMetric(params interface{}) interface{} {
 	if last_metrics == nil {
 		rwmutex.Lock()
 		last_metrics = make(map[string]map[string]uint64)
-		new_metrics = true
 		rwmutex.Unlock()
+		new_metrics = true
 	}
 
 	if last_metrics[device] == nil {
@@ -60,15 +60,11 @@ func GetMetric(params interface{}) interface{} {
 	base_path := fmt.Sprintf(file_pattern, device)
 
 	for fn, metric := range file_map {
-		if new_metrics {
-			metrics[metric] = 0
+		result, err := readFile(base_path, fn)
+		if err == nil {
+			metrics[metric] = result
 		} else {
-			result, err := readFile(base_path, fn)
-			if err == nil {
-				metrics[metric] = result
-			} else {
-				metrics[metric] = 0
-			}
+			metrics[metric] = 0
 		}
 	}
 
@@ -76,7 +72,7 @@ func GetMetric(params interface{}) interface{} {
 		if new_metrics {
 			difference[metric] = 0
 			rwmutex.Lock()
-			last_metrics[device][metric] = 0
+			last_metrics[device][metric] = value
 			rwmutex.Unlock()
 		} else {
 			rwmutex.RLock()
