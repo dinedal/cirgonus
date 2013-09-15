@@ -41,8 +41,8 @@ func GetMetric(params interface{}) interface{} {
 	}
 
 	return map[string]interface{}{
-		"Total": total,
-		"Free":  buffers + cached + free,
-		"Used":  total - (buffers + cached + free),
+		"Total": total * 1024,
+		"Free":  (buffers + cached + free) * 1024,
+		"Used":  total*1024 - ((buffers + cached + free) * 1024),
 	}
 }
