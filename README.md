@@ -23,7 +23,7 @@ curl http://ubuntu.local:8000 -d '{ "Name": "tha load" }'
 Will return just the "tha load" metric:
 
 ```json
-{"Type":"load_average","Value":[0,0.01,0.05]}
+[0,0.01,0.05]
 ```
 
 Otherwise a plain GET to the root:
@@ -36,44 +36,21 @@ Will return all the metrics (Example from `test.json` configuration):
 
 ```json
 {
-  "cpu_usage": {
-    "Type": "cpu_usage",
-    "Value": [0,4]
-  },
+  "cpu_usage": [0,4],
   "echo hello": {
-    "Type": "command",
-    "Value": {
-      "hello": 1
-    }
+    "hello": 1
   },
   "echo hi": {
-    "Type": "command",
-    "Value": {
-      "hi": 1
-    }
+    "hi": 1
   },
   "mem_usage": {
-    "Type": "mem_usage",
-    "Value": {
-      "Free":845040,
-      "Total":1011956,
-      "Used":166916
-    }
+    "Free":845040,
+    "Total":1011956,
+    "Used":166916
   },
-  "tha load": {
-    "Type": "load_average",
-    "Value": [0, 0.01, 0.05]
-  }
+  "tha load": [0, 0.01, 0.05]
 }
 ```
-
-## Returned Metrics Format
-
-An object of objects, keyed by the name of the metric, that have two elements:
-
-* Type -- the type of metrics plugin.
-* Value -- an arbitrary json-formatted value, dependent on the plugin (and in
-  the case of `command`, the output of the command.)
 
 ## Config File
 
@@ -133,15 +110,12 @@ Results (hopefully self-explanatory):
 ```json
 {
   "eth0 usage": {
-    "Type": "net_usage",
-    "Value": {
-      "Received (Bytes)": 2406,
-      "Received (Packets)": 25,
-      "Reception Errors": 0,
-      "Transmission Errors": 0,
-      "Transmitted (Bytes)": 1749,
-      "Transmitted (Packets)": 13
-    }
+    "Received (Bytes)": 2406,
+    "Received (Packets)": 25,
+    "Reception Errors": 0,
+    "Transmission Errors": 0,
+    "Transmitted (Bytes)": 1749,
+    "Transmitted (Packets)": 13
   }
 }
 ```
@@ -158,20 +132,17 @@ Results:
 ```json
 {
   "dm-0 usage": {
-    "Type": "io_usage",
-    "Value": {
-      "io time (ms)": 1768,
-      "iops in progress": 0,
-      "reads issued": 4513,
-      "reads merged": 0,
-      "sectors read": 36608,
-      "sectors written": 55456,
-      "time reading (ms)": 1688,
-      "time writing (ms)": 127156,
-      "weighted io time (ms)": 128844,
-      "writes completed": 5399,
-      "writes merged":0
-    }
+    "io time (ms)": 1768,
+    "iops in progress": 0,
+    "reads issued": 4513,
+    "reads merged": 0,
+    "sectors read": 36608,
+    "sectors written": 55456,
+    "time reading (ms)": 1688,
+    "time writing (ms)": 127156,
+    "weighted io time (ms)": 128844,
+    "writes completed": 5399,
+    "writes merged": 0
   }
 }
 ```
@@ -192,10 +163,10 @@ An example from `test.json`:
 }
 ```
 
-This results in this MeterResult:
+This results in this:
 
 ```json
-{ "echo hi": {"Type":"command","Value":{"hi":1}} }
+{ "echo hi": {"hi":1} }
 ```
 
 Note the value has been injected directly into the json form so that Circonus
@@ -203,4 +174,4 @@ can treat it like a proper json value.
 
 ## License
 
-* MIT (C) Erik Hollensbe
+* MIT (C) 2013 Erik Hollensbe
