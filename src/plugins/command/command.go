@@ -17,19 +17,21 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 		command[i] = param.(string)
 	}
 
+	log.Debug(fmt.Sprintf("Command executing: %v", command))
+
 	cmd := exec.Command(command[0], command[1:]...)
 
 	out, err := cmd.Output()
 
 	if err != nil {
-		fmt.Println("Error while gathering output for command `", command, "`:", err)
+		log.Crit(fmt.Sprintf("Error while gathering output for command `%s`: %s", command, err))
 		return nil
 	}
 
 	err = json.Unmarshal(out, &json_out)
 
 	if err != nil {
-		fmt.Println("Error while marshalling content:" + string(out))
+		log.Crit(fmt.Sprintf("Error while marshalling content: %s", string(out)))
 		return nil
 	}
 
