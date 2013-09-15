@@ -3,7 +3,9 @@ package web
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log/syslog"
 	"net/http"
 	"query"
 	"strings"
@@ -16,6 +18,7 @@ type Request struct {
 
 type WebHandler struct {
 	Config types.CirconusConfig
+	Logger *syslog.Writer
 }
 
 func (wh *WebHandler) showUnauthorized(w http.ResponseWriter) {
@@ -50,6 +53,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if !wh.handleAuth(r) {
+		wh.Logger.Info(fmt.Sprintf("Unauthorized access from %s", r.RemoteAddr))
 		wh.showUnauthorized(w)
 		return
 	}
@@ -57,12 +61,15 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		{
+			wh.Logger.Debug("Handling GET")
+
 			out, err := json.Marshal(query.AllPlugins(wh.Config))
 
 			if err != nil {
-				/* FIXME log */
+				wh.Logger.Crit(fmt.Sprintf("Error marshalling all metrics: %s", err))
 				w.WriteHeader(500)
 			} else {
+				wh.Logger.Debug(fmt.Sprintf("Writing all metrics to %s", r.RemoteAddr))
 				w.Write(out)
 			}
 
@@ -73,8 +80,10 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			req := Request{}
 			in, err := ioutil.ReadAll(r.Body)
 
+			wh.Logger.Debug(fmt.Sprintf("Handling POST with payload '%s'", in))
+
 			if err != nil {
-				/* FIXME log */
+				wh.Logger.Crit(fmt.Sprintf("Error encountered reading: %s", err))
 				w.WriteHeader(500)
 			}
 
@@ -83,22 +92,26 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if req.Name != "" {
 				out, err := json.Marshal(query.Plugin(req.Name, wh.Config))
 				if err != nil {
-					/* FIXME log */
+					wh.Logger.Crit(fmt.Sprintf("Error gathering metrics for %s: %s", req.Name, err))
 					w.WriteHeader(500)
 				} else {
+					wh.Logger.Debug(fmt.Sprintf("Handling POST for metric '%s'", req.Name))
 					w.Write(out)
 				}
 			} else {
+				wh.Logger.Debug(fmt.Sprintf("404ing because no payload from %s", r.RemoteAddr))
 				w.WriteHeader(404)
 			}
 		}
 	}
 }
 
-func Start(listen string, config types.CirconusConfig) error {
+func Start(listen string, config types.CirconusConfig, log *syslog.Writer) error {
+	log.Info("Starting Web Service")
+
 	s := &http.Server{
 		Addr:    listen,
-		Handler: &WebHandler{Config: config},
+		Handler: &WebHandler{Config: config, Logger: log},
 	}
 
 	return s.ListenAndServe()
