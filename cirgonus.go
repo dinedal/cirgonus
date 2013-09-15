@@ -69,4 +69,5 @@ func main() {
 	result := web.Start(config.Listen, config, log)
 
 	log.Crit(fmt.Sprintf("Failed to start: %s", result))
+	log.Close()
 }
