@@ -3,11 +3,12 @@ package mem_usage
 import (
 	"fmt"
 	"io/ioutil"
+	"log/syslog"
 	"strconv"
 	"strings"
 )
 
-func GetMetric(params interface{}) interface{} {
+func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	content, err := ioutil.ReadFile("/proc/meminfo")
 
 	var total, buffers, cached, free int

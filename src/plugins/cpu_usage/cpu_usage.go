@@ -11,6 +11,7 @@ import "C"
 import (
 	"fmt"
 	"io/ioutil"
+	"log/syslog"
 	"strconv"
 	"strings"
 	"time"
@@ -71,7 +72,7 @@ func getJiffyDiff() (int64, int64) {
 	return time2 - time1, cpus
 }
 
-func GetMetric(params interface{}) interface{} {
+func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	diff, cpus := getJiffyDiff()
 	return [2]float64{(float64(diff) / float64(C.get_hz())), float64(cpus)}
 }

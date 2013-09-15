@@ -3,6 +3,7 @@ package net_usage
 import (
 	"fmt"
 	"io/ioutil"
+	"log/syslog"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -35,7 +36,7 @@ func readFile(base_path string, metric string) (uint64, error) {
 	return out_i, err
 }
 
-func GetMetric(params interface{}) interface{} {
+func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 
 	new_metrics := false
 	device := params.(string)

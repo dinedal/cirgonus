@@ -3,10 +3,11 @@ package command
 import (
 	"encoding/json"
 	"fmt"
+	"log/syslog"
 	"os/exec"
 )
 
-func GetMetric(params interface{}) interface{} {
+func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	array_params := params.([]interface{})
 	command := make([]string, len(array_params))
 

@@ -22,7 +22,6 @@ type WebHandler struct {
 }
 
 func (wh *WebHandler) showUnauthorized(w http.ResponseWriter) {
-	/* FIXME log */
 	w.Header().Add("WWW-Authenticate", "Basic realm=\"cirgonus\"")
 	w.WriteHeader(401)
 }
@@ -63,7 +62,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		{
 			wh.Logger.Debug("Handling GET")
 
-			out, err := json.Marshal(query.AllPlugins(wh.Config))
+			out, err := json.Marshal(query.AllPlugins(wh.Config, wh.Logger))
 
 			if err != nil {
 				wh.Logger.Crit(fmt.Sprintf("Error marshalling all metrics: %s", err))
@@ -90,7 +89,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			json.Unmarshal(in, &req)
 
 			if req.Name != "" {
-				out, err := json.Marshal(query.Plugin(req.Name, wh.Config))
+				out, err := json.Marshal(query.Plugin(req.Name, wh.Config, wh.Logger))
 				if err != nil {
 					wh.Logger.Crit(fmt.Sprintf("Error gathering metrics for %s: %s", req.Name, err))
 					w.WriteHeader(500)

@@ -10,7 +10,7 @@ import (
 	"plugins/net_usage"
 )
 
-var Plugins = map[string]func(interface{}) interface{}{
+var Plugins = map[string]func(interface{}, *syslog.Writer) interface{}{
 	"load_average": load_average.GetMetric,
 	"cpu_usage":    cpu_usage.GetMetric,
 	"mem_usage":    mem_usage.GetMetric,
