@@ -9,12 +9,13 @@ import (
 )
 
 func GetMetric(params interface{}, log *syslog.Writer) interface{} {
+	log.Debug("Reading /proc/meminfo")
 	content, err := ioutil.ReadFile("/proc/meminfo")
 
 	var total, buffers, cached, free int
 
 	if err != nil {
-		fmt.Println("While processing the mem_usage package:", err)
+		log.Crit(fmt.Sprintf("While processing the mem_usage package: %s", err))
 		return map[string]interface{}{}
 	}
 
@@ -36,7 +37,7 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 		}
 
 		if err != nil {
-			fmt.Println("Could not convert integer from string while processing cpu_usage: ", parts[id])
+			log.Crit(fmt.Sprintf("Could not convert integer from string while processing cpu_usage: %s", parts[id]))
 			return map[string]interface{}{}
 		}
 	}
