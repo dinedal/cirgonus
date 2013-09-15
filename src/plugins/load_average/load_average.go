@@ -5,8 +5,14 @@ package load_average
 */
 import "C"
 
-func GetMetric(params interface{}) interface{} {
+import (
+	"log/syslog"
+)
+
+func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	var loadavg [3]C.double
+
+	log.Debug("Calling getloadavg()")
 
 	C.getloadavg(&loadavg[0], 3)
 
