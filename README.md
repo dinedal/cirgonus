@@ -59,10 +59,14 @@ of how it should look.
 
 ### Attributes
 
+All attributes are currently required.
+
 * Listen: `host:port` (host optional) designation on where the agent should
   listen.
 * Username: the username for basic authentication.
 * Password: the password for basic authentication.
+* Facility: the syslog facility to use. Controlling log levels is a function of
+  your syslogd.
 * Plugins: An array of plugin definitions. See `Plugins`.
 
 ## Plugins
