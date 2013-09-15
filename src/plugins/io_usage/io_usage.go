@@ -137,8 +137,12 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	new_metrics := initLastMetrics(device)
 	metrics, err := getDiskMetrics(device, device_type)
 
+	if new_metrics {
+		log.Debug("New metrics, sending zeroes")
+	}
+
 	if err != nil {
-		fmt.Println(err)
+		log.Crit(fmt.Sprintf("%s", err))
 	}
 
 	for metric, value := range metrics {
