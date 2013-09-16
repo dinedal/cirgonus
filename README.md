@@ -9,6 +9,15 @@ kernel release due to dependence on system structs and other deep voodoo.
 
 Cirgonus does not need to be run as root to collect its metrics.
 
+## Building Cirgonus
+
+Cirgonus due to its C dependencies must be built on a Linux box. I strongly
+recommend
+[godeb](http://blog.labix.org/2013/06/15/in-flight-deb-packages-of-go) for
+linux users.
+
+To build, type: `GOPATH=$PWD:$GOROOT go build cirgonus.go`
+
 ## Config File
 
 A config file is required to run Cirgonus. Check out `test.json` for an example
