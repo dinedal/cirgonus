@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log/syslog"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -156,4 +157,41 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	}
 
 	return difference
+}
+
+/* FIXME refactor to use getDiskMetrics's code for this in the future */
+
+func Detect() interface{} {
+	out, err := ioutil.ReadFile(DISKSTATS_FILE)
+	var collector []string
+
+	if err != nil {
+		fmt.Println("during detection, got error:", err)
+		os.Exit(1)
+	}
+
+	lines := strings.Split(string(out), "\n")
+	re, _ := regexp.Compile("[ \t]+")
+
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+
+		parts := re.Split(line, -1)
+		parts = parts[1:]
+
+		device_type_parsed, err := strconv.ParseUint(parts[LINE_ID], 10, 64)
+
+		if err != nil {
+			fmt.Println("during detection, got error:", err)
+			os.Exit(1)
+		}
+
+		if uint(device_type_parsed) == DEVICE_DISK || uint(device_type_parsed) == DEVICE_DM {
+			collector = append(collector, parts[LINE_DEVICE])
+		}
+	}
+
+	return collector
 }
