@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log/syslog"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
 )
 
-var file_pattern = "/sys/class/net/%s/statistics/"
+var net_base_path = "/sys/class/net"
+var file_pattern = filepath.Join(net_base_path, "%s/statistics/")
 
 var file_map = map[string]string{
 	"rx_bytes":   "Received (Bytes)",
@@ -93,4 +95,21 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	}
 
 	return difference
+}
+
+func Detect() interface{} {
+	dirs, err := ioutil.ReadDir(net_base_path)
+
+	var collector []string
+
+	if err != nil {
+		fmt.Println("during detection, got error:", err)
+		os.Exit(1)
+	}
+
+	for _, dir := range dirs {
+		collector = append(collector, dir.Name())
+	}
+
+	return collector
 }

@@ -9,6 +9,15 @@ kernel release due to dependence on system structs and other deep voodoo.
 
 Cirgonus does not need to be run as root to collect its metrics.
 
+## Config File
+
+A config file is required to run Cirgonus. Check out `test.json` for an example
+of how it should look.
+
+You can also use `cirgonus generate` to generate a configuration file from
+monitors it can use and devices you have that it can monitor. This can be nice
+for automated deployments.
+
 ## Querying
 
 * GET querying the root will return all metrics.
@@ -51,11 +60,6 @@ Will return all the metrics (Example from `test.json` configuration):
   "tha load": [0, 0.01, 0.05]
 }
 ```
-
-## Config File
-
-A config file is required to run Cirgonus. Check out `test.json` for an example
-of how it should look.
 
 ### Attributes
 
