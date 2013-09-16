@@ -25,21 +25,18 @@ How this works:
 Basically, interface is expected to be nil or an array of strings which are
 single parameters passed to the Params section of each json. Each element of
 the array is treated as a Params line and passed straight to the generated
-json.
+json. A params of "" is treated as nil because go is kind of stupid about nils.
 
 nil means to not include the monitor. Command is a good example of a monitor we
 don't want to ever try to detect.
 
-For example, net_usage presents an array of strings, each string will be the
-whole of Params for that monitor.
-
-In the load average case, our params are nil, but we want to always include it.
+In the load average case, our params are "", but we want to always include it.
 */
 
 var Detectors = map[string]func() interface{}{
-	"load_average": func() interface{} { return []string{} },
-	"cpu_usage":    func() interface{} { return []string{} },
-	"mem_usage":    func() interface{} { return []string{} },
+	"load_average": func() interface{} { return []string{""} },
+	"cpu_usage":    func() interface{} { return []string{""} },
+	"mem_usage":    func() interface{} { return []string{""} },
 	"command":      func() interface{} { return nil },
 	"net_usage":    net_usage.Detect,
 	"io_usage":     io_usage.Detect,
