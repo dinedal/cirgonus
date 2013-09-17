@@ -149,12 +149,14 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	for metric, value := range metrics {
 		if new_metrics {
 			difference[metric] = 0
-			writeMetric(device, metric, readMetric(device, metric))
 		} else {
 			difference[metric] = value - readMetric(device, metric)
-			writeMetric(device, metric, value)
+			if int64(value-readMetric(device, metric)) < 0 {
+				difference[metric] = 0
+			}
 		}
 
+		writeMetric(device, metric, value)
 	}
 
 	return difference
