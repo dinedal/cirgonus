@@ -192,7 +192,7 @@ func Detect() interface{} {
 		     for some reason ram disks are detected as well -- figure out why
 				 (or how to parse them)
 		*/
-		if (uint(device_type_parsed) == DEVICE_DISK || uint(device_type_parsed) == DEVICE_DM) && strings.Index(parts[LINE_DEVICE], "ram") != 0 {
+		if (uint(device_type_parsed) == device_to_diskstat_id[DEVICE_DISK] || uint(device_type_parsed) == device_to_diskstat_id[DEVICE_DM]) && strings.Index(parts[LINE_DEVICE], "ram") != 0 {
 			collector = append(collector, parts[LINE_DEVICE])
 		}
 	}
