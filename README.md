@@ -1,7 +1,9 @@
 # Cirgonus
 
 Cirgonus is a go-related pun on [Circonus](http://circonus.com) and is a
-metrics collector for it (and anything else that can deal with json output).
+metrics collector for it (and anything else that can deal with json output). It
+also comes with `cstat`, a platform-independent `iostat` alike for gathering
+cirgonus metrics from many hosts.
 
 Most of the built-in collectors are linux-only for now, and probably the future
 unless pull requests happen. Many plugins very likely require a 3.0 or later
@@ -14,9 +16,11 @@ Cirgonus does not need to be run as root to collect its metrics.
 Cirgonus due to its C dependencies must be built on a Linux box. I strongly
 recommend
 [godeb](http://blog.labix.org/2013/06/15/in-flight-deb-packages-of-go) for
-linux users.
+linux users. `cstat`, however, has no such requirement, so use it on OS X or
+windows if you choose.
 
-To build, type: `GOPATH=$PWD:$GOROOT go build cirgonus.go`
+To build, type: `GOPATH=$PWD:$GOROOT go build cirgonus.go`. To build `cstat`,
+type `GOPATH=$PWD:$GOROOT go build cstat.go`.
 
 ## Config File
 
@@ -26,6 +30,19 @@ of how it should look.
 You can also use `cirgonus generate` to generate a configuration file from
 monitors it can use and devices you have that it can monitor. This can be nice
 for automated deployments.
+
+### Attributes
+
+All attributes are currently required.
+
+* Listen: `host:port` (host optional) designation on where the agent should
+  listen.
+* Username: the username for basic authentication.
+* Password: the password for basic authentication.
+* Facility: the syslog facility to use. Controlling log levels is a function of
+  your syslogd.
+* Plugins: An array of plugin definitions. See `Plugins`.
+
 
 ## Querying
 
@@ -70,17 +87,26 @@ Will return all the metrics (Example from `test.json` configuration):
 }
 ```
 
-### Attributes
+## cstat
 
-All attributes are currently required.
+`cstat` is a small utility to gather statistics from cirgonus agents and
+display them in an `iostat`-alike manner. For example:
 
-* Listen: `host:port` (host optional) designation on where the agent should
-  listen.
-* Username: the username for basic authentication.
-* Password: the password for basic authentication.
-* Facility: the syslog facility to use. Controlling log levels is a function of
-  your syslogd.
-* Plugins: An array of plugin definitions. See `Plugins`.
+```
+$ cstat -hosts linux-1.local,go-test.local,linux-2.local -metric "load_average"
+
+linux-1.local: [0,0.01,0.05]
+go-test.local: [0,0.01,0.05]
+linux-2.local: [0,0.01,0.05]
+
+linux-1.local: [0,0.01,0.05]
+go-test.local: [0,0.01,0.05]
+linux-2.local: [0,0.01,0.05]
+
+linux-1.local: [0,0.01,0.05]
+go-test.local: [0,0.01,0.05]
+linux-2.local: [0,0.01,0.05]
+```
 
 ## Plugins
 
