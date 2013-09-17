@@ -161,7 +161,7 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 
 /* FIXME refactor to use getDiskMetrics's code for this in the future */
 
-func Detect() interface{} {
+func Detect() []string {
 	out, err := ioutil.ReadFile(DISKSTATS_FILE)
 	var collector []string
 

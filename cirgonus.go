@@ -65,7 +65,7 @@ func generateConfig() {
 			continue
 		}
 
-		casted_retval := retval.([]string)
+		casted_retval := retval
 
 		if len(casted_retval) == 0 {
 			continue

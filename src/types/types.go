@@ -33,11 +33,11 @@ don't want to ever try to detect.
 In the load average case, our params are "", but we want to always include it.
 */
 
-var Detectors = map[string]func() interface{}{
-	"load_average": func() interface{} { return []string{""} },
-	"cpu_usage":    func() interface{} { return []string{""} },
-	"mem_usage":    func() interface{} { return []string{""} },
-	"command":      func() interface{} { return nil },
+var Detectors = map[string]func() []string{
+	"load_average": func() []string { return []string{} },
+	"cpu_usage":    func() []string { return []string{} },
+	"mem_usage":    func() []string { return []string{} },
+	"command":      func() []string { return []string(nil) },
 	"net_usage":    net_usage.Detect,
 	"io_usage":     io_usage.Detect,
 }

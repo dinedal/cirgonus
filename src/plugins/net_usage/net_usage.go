@@ -97,7 +97,7 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	return difference
 }
 
-func Detect() interface{} {
+func Detect() []string {
 	dirs, err := ioutil.ReadDir(net_base_path)
 
 	var collector []string
