@@ -12,11 +12,11 @@ func Plugin(name string, config types.CirconusConfig, log *syslog.Writer) interf
 	item, ok := config.Plugins[name]
 
 	if ok {
-		_, ok := types.Plugins[item.Type.(string)]
+		_, ok := types.Plugins[item.Type]
 
 		if ok {
 			log.Debug(fmt.Sprintf("Plugin %s exists, running", name))
-			return types.Plugins[item.Type.(string)](item.Params, log)
+			return types.Plugins[item.Type](item.Params, log)
 		}
 	}
 

@@ -66,7 +66,7 @@ var FacilityMap = map[string]syslog.Priority{
 }
 
 type ConfigMap struct {
-	Type   interface{}
+	Type   string
 	Params interface{}
 }
 
