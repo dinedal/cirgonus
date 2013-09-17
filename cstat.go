@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 	"time"
 )
@@ -19,26 +20,26 @@ type options struct {
 	metric   string
 }
 
-func poll(opts options) {
-	for _, host := range strings.Split(opts.hosts, ",") {
-		host_url := fmt.Sprintf("http://%s:%s@%s:%d", opts.username, opts.password, host, opts.port)
-		payload, err := json.Marshal(map[string]string{"Name": opts.metric})
-		resp, err := http.Post(host_url, "application/json", strings.NewReader(string(payload)))
+func poll(host string, opts options, result_chan chan [2]string) {
+	host_url := fmt.Sprintf("http://%s:%s@%s:%d", opts.username, opts.password, host, opts.port)
+	payload, err := json.Marshal(map[string]string{"Name": opts.metric})
+	resp, err := http.Post(host_url, "application/json", strings.NewReader(string(payload)))
 
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		defer resp.Body.Close()
-
-		json, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		fmt.Printf("%s: %s\n", host, string(json))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
+
+	defer resp.Body.Close()
+
+	json, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	result_chan <- [2]string{host, string(json)}
 }
 
 func main() {
@@ -66,9 +67,31 @@ func main() {
 		os.Exit(1)
 	}
 
+	result_chan := make(chan [2]string)
+	results := make(map[string]string)
+	var keys []string
+	hosts := strings.Split(opts.hosts, ",")
+
 	for {
 		fmt.Println()
-		poll(opts)
+
+		for _, host := range hosts {
+			go poll(host, opts, result_chan)
+		}
+
+		for i := 0; i < len(hosts); i++ {
+			result := <-result_chan
+			results[result[0]] = result[1]
+			keys = append(keys, result[0])
+		}
+
+		sort.Strings(keys)
+
+		for _, k := range keys {
+			fmt.Printf("%s: %s\n", k, results[k])
+		}
+
 		time.Sleep(1 * time.Second)
+		keys = []string{}
 	}
 }
