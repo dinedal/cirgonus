@@ -65,25 +65,19 @@ func generateConfig() {
 			continue
 		}
 
-		casted_retval := retval
-
-		if len(casted_retval) == 0 {
+		if len(retval) == 0 {
+			config.Plugins[key] = types.ConfigMap{
+				Type:   key,
+				Params: nil,
+			}
 			continue
-		} else {
-			for _, detected := range casted_retval {
-				if detected == "" {
-					config.Plugins[key] = types.ConfigMap{
-						Type:   key,
-						Params: nil,
-					}
-					break
-				} else {
-					newkey := strings.Join([]string{detected, key}, " ")
-					config.Plugins[newkey] = types.ConfigMap{
-						Type:   key,
-						Params: detected,
-					}
-				}
+		}
+
+		for _, detected := range retval {
+			newkey := strings.Join([]string{detected, key}, " ")
+			config.Plugins[newkey] = types.ConfigMap{
+				Type:   key,
+				Params: detected,
 			}
 		}
 	}
