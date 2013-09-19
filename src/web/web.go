@@ -7,13 +7,15 @@ import (
 	"io/ioutil"
 	"log/syslog"
 	"net/http"
+	"plugins/record"
 	"query"
 	"strings"
 	"types"
 )
 
 type Request struct {
-	Name string
+	Name  string
+	Value interface{}
 }
 
 type WebHandler struct {
@@ -48,6 +50,22 @@ func (wh *WebHandler) handleAuth(r *http.Request) bool {
 	return true
 }
 
+func (wh *WebHandler) readAndUnmarshal(w http.ResponseWriter, r *http.Request, requestType string) Request {
+	req := Request{}
+	in, err := ioutil.ReadAll(r.Body)
+
+	wh.Logger.Debug(fmt.Sprintf("Handling %s with payload '%s'", requestType, in))
+
+	if err != nil {
+		wh.Logger.Crit(fmt.Sprintf("Error encountered reading: %s", err))
+		w.WriteHeader(500)
+	}
+
+	json.Unmarshal(in, &req)
+
+	return req
+}
+
 func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
@@ -76,17 +94,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	case "POST":
 		{
-			req := Request{}
-			in, err := ioutil.ReadAll(r.Body)
-
-			wh.Logger.Debug(fmt.Sprintf("Handling POST with payload '%s'", in))
-
-			if err != nil {
-				wh.Logger.Crit(fmt.Sprintf("Error encountered reading: %s", err))
-				w.WriteHeader(500)
-			}
-
-			json.Unmarshal(in, &req)
+			req := wh.readAndUnmarshal(w, r, "POST")
 
 			if req.Name != "" {
 				out, err := json.Marshal(query.Plugin(req.Name, wh.Config, wh.Logger))
@@ -100,6 +108,20 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			} else {
 				wh.Logger.Debug(fmt.Sprintf("404ing because no payload from %s", r.RemoteAddr))
 				w.WriteHeader(404)
+			}
+		}
+	case "PUT":
+		{
+			req := wh.readAndUnmarshal(w, r, "PUT")
+			if req.Name == "" {
+				wh.Logger.Crit(fmt.Sprintf("Cannot write record with an empty value"))
+				w.WriteHeader(500)
+			} else {
+				wh.Logger.Debug("here")
+				record.RecordMetric(req.Name, req.Value, wh.Logger)
+				wh.Logger.Debug("here")
+				w.WriteHeader(200)
+				w.Write([]byte("OK"))
 			}
 		}
 	}

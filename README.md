@@ -48,6 +48,7 @@ All attributes are currently required.
 
 * GET querying the root will return all metrics.
 * POST querying with a `{ "Name": "metric name" }` json object will return just that metric.
+* PUT querying is handled by the "record" plugin. See it below.
 
 e.g., if Cirgonus is running on `ubuntu.local:8000`:
 
@@ -214,6 +215,55 @@ This results in this:
 
 Note the value has been injected directly into the json form so that Circonus
 can treat it like a proper json value.
+
+## record
+
+This allows you to inject values into cirgonus. When a PUT query is issued with
+a payload that looks like:
+
+```json
+{ 
+  "Name": "record parameter",
+  "Value": "arbitrary json value"
+}
+```
+
+It will show up when queried with GET or POST methods just like any other
+cirgonus metric.
+
+### Configuration
+
+Configuration is a bit tricky; see `test.json` or see the below example. Note that
+the metric name and parameter are the same. This is critical to the accurate
+function of this plugin.
+
+For a given metric named "record_example":
+
+```json
+"record_example": {
+  "Type": "record",
+  "Params": "record_example"
+}
+```
+
+### record example usage
+
+You can try with the above configuration example with the following `curl`
+commands:
+
+To set the value:
+
+```
+curl http://cirgonus:cirgonus@localhost:8000 -X PUT -d '{ "Name": "record_example", "Value": 1 }'
+```
+
+To get the value:
+
+```
+curl http://cirgonus:cirgonus@localhost:8000 -d '{ "Name": "record_example" }'
+```
+
+Which will return `1`.
 
 ## License
 
