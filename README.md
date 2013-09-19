@@ -216,7 +216,7 @@ This results in this:
 Note the value has been injected directly into the json form so that Circonus
 can treat it like a proper json value.
 
-## record
+### record
 
 This allows you to inject values into cirgonus. When a PUT query is issued with
 a payload that looks like:
@@ -231,7 +231,7 @@ a payload that looks like:
 It will show up when queried with GET or POST methods just like any other
 cirgonus metric.
 
-### Configuration
+#### Configuration
 
 Configuration is a bit tricky; see `test.json` or see the below example. Note that
 the metric name and parameter are the same. This is critical to the accurate
@@ -246,7 +246,7 @@ For a given metric named "record_example":
 }
 ```
 
-### record example usage
+#### record example usage
 
 You can try with the above configuration example with the following `curl`
 commands:
