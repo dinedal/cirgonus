@@ -3,6 +3,10 @@
   "Username": "cirgonus",
   "Password": "cirgonus",
   "Plugins": {
+    "record_example": {
+      "Type": "record",
+      "Params": "record_example"
+    },
     "tha load": {
       "Type": "load_average",
       "Params": null

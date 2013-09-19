@@ -8,6 +8,7 @@ import (
 	"plugins/load_average"
 	"plugins/mem_usage"
 	"plugins/net_usage"
+	"plugins/record"
 )
 
 var Plugins = map[string]func(interface{}, *syslog.Writer) interface{}{
@@ -17,6 +18,7 @@ var Plugins = map[string]func(interface{}, *syslog.Writer) interface{}{
 	"command":      command.GetMetric,
 	"net_usage":    net_usage.GetMetric,
 	"io_usage":     io_usage.GetMetric,
+	"record":       record.GetMetric,
 }
 
 /*
