@@ -2,7 +2,7 @@ package query
 
 import (
 	"fmt"
-	"log/syslog"
+	"logger"
 	"sync"
 	"time"
 	"types"
@@ -20,8 +20,8 @@ func GetResults() map[string]interface{} {
 	return *PluginResults
 }
 
-func ResultPoller(config types.CirconusConfig, log *syslog.Writer) {
-	log.Info("Starting Result Poller")
+func ResultPoller(config types.CirconusConfig, log *logger.Logger) {
+	log.Log("info", "Starting Result Poller")
 	interval_duration := time.Second * time.Duration(config.PollInterval)
 
 	for {
@@ -35,14 +35,14 @@ func ResultPoller(config types.CirconusConfig, log *syslog.Writer) {
 	}
 }
 
-func AllResults(config types.CirconusConfig, log *syslog.Writer) {
+func AllResults(config types.CirconusConfig, log *logger.Logger) {
 	rwmutex.Lock()
 	PluginResults = AllPlugins(config, log)
 	rwmutex.Unlock()
 }
 
-func Plugin(name string, config types.CirconusConfig, log *syslog.Writer) interface{} {
-	log.Debug(fmt.Sprintf("Plugin %s Requested", name))
+func Plugin(name string, config types.CirconusConfig, log *logger.Logger) interface{} {
+	log.Log("debug", fmt.Sprintf("Plugin %s Requested", name))
 
 	item, ok := config.Plugins[name]
 
@@ -50,7 +50,7 @@ func Plugin(name string, config types.CirconusConfig, log *syslog.Writer) interf
 		_, ok := types.Plugins[item.Type]
 
 		if ok {
-			log.Debug(fmt.Sprintf("Plugin %s exists, running", name))
+			log.Log("debug", fmt.Sprintf("Plugin %s exists, running", name))
 			return types.Plugins[item.Type](item.Params, log)
 		}
 	}
@@ -58,16 +58,16 @@ func Plugin(name string, config types.CirconusConfig, log *syslog.Writer) interf
 	return nil
 }
 
-func AllPlugins(config types.CirconusConfig, log *syslog.Writer) *map[string]interface{} {
+func AllPlugins(config types.CirconusConfig, log *logger.Logger) *map[string]interface{} {
 	retval := make(map[string]interface{})
 
-	log.Debug("Querying All Plugins")
+	log.Log("debug", "Querying All Plugins")
 
 	for key, _ := range config.Plugins {
 		retval[key] = Plugin(key, config, log)
 	}
 
-	log.Debug("Done Querying All Plugins")
+	log.Log("debug", "Done Querying All Plugins")
 
 	return &retval
 }
