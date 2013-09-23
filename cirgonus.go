@@ -54,11 +54,12 @@ func loadConfig(configFile string) (cc types.CirconusConfig, err error) {
 
 func generateConfig() {
 	config := types.CirconusConfig{
-		Listen:   ":8000",
-		Username: "cirgonus",
-		Password: "cirgonus",
-		Facility: "daemon",
-		Plugins:  make(map[string]types.ConfigMap),
+		Listen:       ":8000",
+		Username:     "cirgonus",
+		Password:     "cirgonus",
+		Facility:     "daemon",
+		PollInterval: 5,
+		Plugins:      make(map[string]types.ConfigMap),
 	}
 
 	for key, value := range types.Detectors {
