@@ -2,6 +2,7 @@
   "Listen": ":8000",
   "Username": "cirgonus",
   "Password": "cirgonus",
+  "PollInterval": 5,
   "Plugins": {
     "record_example": {
       "Type": "record",

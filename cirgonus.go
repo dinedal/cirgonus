@@ -35,6 +35,10 @@ func loadConfig(configFile string) (cc types.CirconusConfig, err error) {
 
 	err = json.Unmarshal(content, &cc)
 
+	if cc.PollInterval == 0 {
+		cc.PollInterval = 1
+	}
+
 	for k := range cc.Plugins {
 		if len(cc.Plugins[k].Type) == 0 {
 			old := cc.Plugins[k]

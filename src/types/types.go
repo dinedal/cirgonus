@@ -73,9 +73,10 @@ type ConfigMap struct {
 }
 
 type CirconusConfig struct {
-	Listen   string
-	Username string
-	Password string
-	Facility string
-	Plugins  map[string]ConfigMap
+	Listen       string
+	Username     string
+	Password     string
+	Facility     string
+	PollInterval uint
+	Plugins      map[string]ConfigMap
 }
