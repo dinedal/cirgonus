@@ -35,6 +35,10 @@ func loadConfig(configFile string) (cc types.CirconusConfig, err error) {
 
 	err = json.Unmarshal(content, &cc)
 
+	if cc.PollInterval == 0 {
+		cc.PollInterval = 1
+	}
+
 	for k := range cc.Plugins {
 		if len(cc.Plugins[k].Type) == 0 {
 			old := cc.Plugins[k]
@@ -50,11 +54,12 @@ func loadConfig(configFile string) (cc types.CirconusConfig, err error) {
 
 func generateConfig() {
 	config := types.CirconusConfig{
-		Listen:   ":8000",
-		Username: "cirgonus",
-		Password: "cirgonus",
-		Facility: "daemon",
-		Plugins:  make(map[string]types.ConfigMap),
+		Listen:       ":8000",
+		Username:     "cirgonus",
+		Password:     "cirgonus",
+		Facility:     "daemon",
+		PollInterval: 5,
+		Plugins:      make(map[string]types.ConfigMap),
 	}
 
 	for key, value := range types.Detectors {
