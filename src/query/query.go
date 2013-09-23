@@ -3,8 +3,33 @@ package query
 import (
 	"fmt"
 	"log/syslog"
+	"sync"
+	"time"
 	"types"
 )
+
+var rwmutex sync.RWMutex
+var PluginResults = map[string]interface{}{}
+
+func ResultPoller(interval int, config types.CirconusConfig, log *syslog.Writer) {
+	log.Info("Starting Result Poller")
+
+	for {
+		start := time.Now()
+		GetAllResults(config, log)
+		duration := time.Now().Sub(start)
+
+		if duration < time.Second*time.Duration(interval) {
+			time.Sleep(duration)
+		}
+	}
+}
+
+func GetAllResults(config types.CirconusConfig, log *syslog.Writer) {
+	rwmutex.Lock()
+	PluginResults = AllPlugins(config, log)
+	rwmutex.Unlock()
+}
 
 func Plugin(name string, config types.CirconusConfig, log *syslog.Writer) interface{} {
 	log.Debug(fmt.Sprintf("Plugin %s Requested", name))

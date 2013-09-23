@@ -128,6 +128,8 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func Start(listen string, config types.CirconusConfig, log *syslog.Writer) error {
+	query.ResultPoller(1, config, log)
+
 	log.Info("Starting Web Service")
 
 	s := &http.Server{
