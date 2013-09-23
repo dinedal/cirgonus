@@ -9,14 +9,23 @@ import (
 )
 
 var rwmutex sync.RWMutex
-var PluginResults = map[string]interface{}{}
+var PluginResults *map[string]interface{}
+
+func GetResult(name string) interface{} {
+	result := *PluginResults
+	return result[name]
+}
+
+func GetResults() map[string]interface{} {
+	return *PluginResults
+}
 
 func ResultPoller(interval int, config types.CirconusConfig, log *syslog.Writer) {
 	log.Info("Starting Result Poller")
 
 	for {
 		start := time.Now()
-		GetAllResults(config, log)
+		AllResults(config, log)
 		duration := time.Now().Sub(start)
 
 		if duration < time.Second*time.Duration(interval) {
@@ -25,7 +34,7 @@ func ResultPoller(interval int, config types.CirconusConfig, log *syslog.Writer)
 	}
 }
 
-func GetAllResults(config types.CirconusConfig, log *syslog.Writer) {
+func AllResults(config types.CirconusConfig, log *syslog.Writer) {
 	rwmutex.Lock()
 	PluginResults = AllPlugins(config, log)
 	rwmutex.Unlock()
@@ -48,7 +57,7 @@ func Plugin(name string, config types.CirconusConfig, log *syslog.Writer) interf
 	return nil
 }
 
-func AllPlugins(config types.CirconusConfig, log *syslog.Writer) map[string]interface{} {
+func AllPlugins(config types.CirconusConfig, log *syslog.Writer) *map[string]interface{} {
 	retval := make(map[string]interface{})
 
 	log.Debug("Querying All Plugins")
@@ -59,5 +68,5 @@ func AllPlugins(config types.CirconusConfig, log *syslog.Writer) map[string]inte
 
 	log.Debug("Done Querying All Plugins")
 
-	return retval
+	return &retval
 }

@@ -80,7 +80,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		{
 			wh.Logger.Debug("Handling GET")
 
-			out, err := json.Marshal(query.AllPlugins(wh.Config, wh.Logger))
+			out, err := json.Marshal(query.GetResults())
 
 			if err != nil {
 				wh.Logger.Crit(fmt.Sprintf("Error marshalling all metrics: %s", err))
@@ -97,7 +97,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			req := wh.readAndUnmarshal(w, r, "POST")
 
 			if req.Name != "" {
-				out, err := json.Marshal(query.Plugin(req.Name, wh.Config, wh.Logger))
+				out, err := json.Marshal(query.GetResult(req.Name))
 				if err != nil {
 					wh.Logger.Crit(fmt.Sprintf("Error gathering metrics for %s: %s", req.Name, err))
 					w.WriteHeader(500)
@@ -128,7 +128,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func Start(listen string, config types.CirconusConfig, log *syslog.Writer) error {
-	query.ResultPoller(1, config, log)
+	go query.ResultPoller(1, config, log)
 
 	log.Info("Starting Web Service")
 
