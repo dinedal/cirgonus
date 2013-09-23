@@ -3,7 +3,7 @@ all: cirgonus cstat
 clean:
 	rm -f cirgonus cstat
 
-cirgonus: cirgonus.go
+cirgonus: cirgonus.go src/*/*/*.go src/*/*.go
 	GOPATH=$(PWD) go build cirgonus.go
 
 cstat: cstat.go
@@ -16,3 +16,9 @@ dist: all cirgonus.tar.gz clean
 
 distclean: clean
 	rm -f cirgonus.tar.gz
+
+run: cirgonus stop
+	sh -c './cirgonus test.json &'
+
+stop: 
+	(pkill cirgonus || exit 0)
