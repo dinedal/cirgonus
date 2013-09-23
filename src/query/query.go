@@ -20,16 +20,17 @@ func GetResults() map[string]interface{} {
 	return *PluginResults
 }
 
-func ResultPoller(interval int, config types.CirconusConfig, log *syslog.Writer) {
+func ResultPoller(config types.CirconusConfig, log *syslog.Writer) {
 	log.Info("Starting Result Poller")
+	interval_duration := time.Second * time.Duration(config.PollInterval)
 
 	for {
 		start := time.Now()
 		AllResults(config, log)
 		duration := time.Now().Sub(start)
 
-		if duration < time.Second*time.Duration(interval) {
-			time.Sleep(duration)
+		if duration < interval_duration {
+			time.Sleep(interval_duration - duration)
 		}
 	}
 }
