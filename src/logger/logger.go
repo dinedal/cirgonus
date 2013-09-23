@@ -57,14 +57,13 @@ type Logger struct {
 }
 
 func Init(facility string) *Logger {
+	var err error
 	log := &Logger{
 		LogLevel: "info",
 		facility: facility,
 	}
 
-	syslog_logger, err := syslog.New(facilityMap[facility]|priorityMap["info"], "cirgonus")
-
-	log.writer = syslog_logger
+	log.writer, err = syslog.New(facilityMap[facility]|priorityMap["info"], "cirgonus")
 
 	if err != nil {
 		panic(fmt.Sprintf("Cannot connect to syslog: %s", err))
