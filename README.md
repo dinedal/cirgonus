@@ -19,8 +19,7 @@ recommend
 linux users. `cstat`, however, has no such requirement, so use it on OS X or
 windows if you choose.
 
-To build, type: `GOPATH=$PWD go build cirgonus.go`. To build `cstat`,
-type `GOPATH=$PWD go build cstat.go`.
+To build, type: `make cirgonus`. To build `cstat`, type `make cstat`.
 
 ## Config File
 
