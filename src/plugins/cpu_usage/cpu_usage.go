@@ -11,17 +11,17 @@ import "C"
 import (
 	"fmt"
 	"io/ioutil"
-	"log/syslog"
+	"logger"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func getJiffies(log *syslog.Writer) (jiffies int64, cpus int64) {
+func getJiffies(log *logger.Logger) (jiffies int64, cpus int64) {
 	content, err := ioutil.ReadFile("/proc/stat")
 
 	if err != nil {
-		log.Crit(fmt.Sprintf("While processing the cpu_usage package: %s"))
+		log.Log("crit", fmt.Sprintf("While processing the cpu_usage package: %s"))
 		return 0, 0
 	}
 
@@ -46,7 +46,7 @@ func getJiffies(log *syslog.Writer) (jiffies int64, cpus int64) {
 				part, err := strconv.Atoi(parts[x])
 
 				if err != nil {
-					log.Crit(fmt.Sprintf("Could not convert integer from string while processing cpu_usage: %s", parts[x]))
+					log.Log("crit", fmt.Sprintf("Could not convert integer from string while processing cpu_usage: %s", parts[x]))
 					return 0, 0
 				}
 
@@ -64,7 +64,7 @@ func getJiffies(log *syslog.Writer) (jiffies int64, cpus int64) {
 	return jiffies, cpus
 }
 
-func getJiffyDiff(log *syslog.Writer) (int64, int64) {
+func getJiffyDiff(log *logger.Logger) (int64, int64) {
 	time1, cpus := getJiffies(log)
 	time.Sleep(1 * time.Second)
 	time2, _ := getJiffies(log)
@@ -72,7 +72,7 @@ func getJiffyDiff(log *syslog.Writer) (int64, int64) {
 	return time2 - time1, cpus
 }
 
-func GetMetric(params interface{}, log *syslog.Writer) interface{} {
+func GetMetric(params interface{}, log *logger.Logger) interface{} {
 	diff, cpus := getJiffyDiff(log)
 	return [2]float64{(float64(diff) / float64(C.get_hz())), float64(cpus)}
 }

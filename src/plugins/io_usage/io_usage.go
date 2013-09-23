@@ -3,7 +3,7 @@ package io_usage
 import (
 	"fmt"
 	"io/ioutil"
-	"log/syslog"
+	"logger"
 	"os"
 	"regexp"
 	"strconv"
@@ -131,7 +131,8 @@ func getDiskMetrics(device string, device_type uint) (retval map[string]uint64, 
 	return retval, err
 }
 
-func GetMetric(params interface{}, log *syslog.Writer) interface{} {
+func GetMetric(params interface{}, log *logger.Logger) interface{} {
+
 	difference := make(map[string]uint64)
 	device := params.(string)
 	device_type := getDeviceType(device)
@@ -139,11 +140,11 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	metrics, err := getDiskMetrics(device, device_type)
 
 	if new_metrics {
-		log.Debug("New metrics, sending zeroes")
+		log.Log("debug", "New metrics, sending zeroes")
 	}
 
 	if err != nil {
-		log.Crit(fmt.Sprintf("%s", err))
+		log.Log("crit", fmt.Sprintf("%s", err))
 	}
 
 	for metric, value := range metrics {

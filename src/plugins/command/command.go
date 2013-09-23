@@ -3,11 +3,11 @@ package command
 import (
 	"encoding/json"
 	"fmt"
-	"log/syslog"
+	"logger"
 	"os/exec"
 )
 
-func GetMetric(params interface{}, log *syslog.Writer) interface{} {
+func GetMetric(params interface{}, log *logger.Logger) interface{} {
 	array_params := params.([]interface{})
 	command := make([]string, len(array_params))
 
@@ -17,21 +17,21 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 		command[i] = param.(string)
 	}
 
-	log.Debug(fmt.Sprintf("Command executing: %v", command))
+	log.Log("debug", fmt.Sprintf("Command executing: %v", command))
 
 	cmd := exec.Command(command[0], command[1:]...)
 
 	out, err := cmd.Output()
 
 	if err != nil {
-		log.Crit(fmt.Sprintf("Error while gathering output for command `%s`: %s", command, err))
+		log.Log("crit", fmt.Sprintf("Error while gathering output for command `%s`: %s", command, err))
 		return nil
 	}
 
 	err = json.Unmarshal(out, &json_out)
 
 	if err != nil {
-		log.Crit(fmt.Sprintf("Error while marshalling content: %s", string(out)))
+		log.Log("crit", fmt.Sprintf("Error while marshalling content: %s", string(out)))
 		return nil
 	}
 

@@ -3,7 +3,7 @@ package net_usage
 import (
 	"fmt"
 	"io/ioutil"
-	"log/syslog"
+	"logger"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -38,7 +38,7 @@ func readFile(base_path string, metric string) (uint64, error) {
 	return out_i, err
 }
 
-func GetMetric(params interface{}, log *syslog.Writer) interface{} {
+func GetMetric(params interface{}, log *logger.Logger) interface{} {
 
 	new_metrics := false
 	device := params.(string)
@@ -58,7 +58,7 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	}
 
 	if new_metrics {
-		log.Debug("New instance, sending zeroes")
+		log.Log("debug", "New instance, sending zeroes")
 	}
 
 	metrics := make(map[string]uint64)
@@ -67,9 +67,9 @@ func GetMetric(params interface{}, log *syslog.Writer) interface{} {
 	base_path := fmt.Sprintf(file_pattern, device)
 
 	for fn, metric := range file_map {
-		log.Debug(fmt.Sprintf("Reading file: %s", fn))
+		log.Log("debug", fmt.Sprintf("Reading file: %s", fn))
 		result, err := readFile(base_path, fn)
-		log.Debug(fmt.Sprintf("Got result: %s", result))
+		log.Log("debug", fmt.Sprintf("Got result: %s", result))
 		if err == nil {
 			metrics[metric] = result
 		} else {
