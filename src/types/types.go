@@ -54,6 +54,7 @@ type CirconusConfig struct {
 	Username     string
 	Password     string
 	Facility     string
+	LogLevel     string
 	PollInterval uint
 	Plugins      map[string]ConfigMap
 }

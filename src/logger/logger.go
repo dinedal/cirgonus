@@ -56,10 +56,10 @@ type Logger struct {
 	writer   *syslog.Writer
 }
 
-func Init(facility string) *Logger {
+func Init(facility string, priority string) *Logger {
 	var err error
 	log := &Logger{
-		LogLevel: "info",
+		LogLevel: priority, // FIXME make this controllable over the tubes
 		facility: facility,
 	}
 

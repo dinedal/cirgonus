@@ -24,6 +24,14 @@ func loadConfig(configFile string) (cc types.CirconusConfig, err error) {
 		cc.PollInterval = 1
 	}
 
+	if cc.Facility == "" {
+		cc.Facility = "daemon"
+	}
+
+	if cc.LogLevel == "" {
+		cc.LogLevel = "info"
+	}
+
 	for k := range cc.Plugins {
 		if len(cc.Plugins[k].Type) == 0 {
 			old := cc.Plugins[k]
@@ -43,6 +51,7 @@ func generateConfig() {
 		Username:     "cirgonus",
 		Password:     "cirgonus",
 		Facility:     "daemon",
+		LogLevel:     "info",
 		PollInterval: 5,
 		Plugins:      make(map[string]types.ConfigMap),
 	}
@@ -103,7 +112,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		log := logger.Init(config.Facility)
+		log := logger.Init(config.Facility, config.LogLevel)
 
 		result := web.Start(config.Listen, config, log)
 
