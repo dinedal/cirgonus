@@ -20,9 +20,9 @@ type options struct {
 	metric   string
 }
 
-func poll(host string, opts options, result_chan chan [2]string) {
+func poll(host string, metric string, opts options, result_chan chan [3]string) {
 	host_url := fmt.Sprintf("http://%s:%s@%s:%d", opts.username, opts.password, host, opts.port)
-	payload, err := json.Marshal(map[string]string{"Name": opts.metric})
+	payload, err := json.Marshal(map[string]string{"Name": metric})
 	resp, err := http.Post(host_url, "application/json", strings.NewReader(string(payload)))
 
 	if err != nil {
@@ -39,7 +39,7 @@ func poll(host string, opts options, result_chan chan [2]string) {
 		os.Exit(1)
 	}
 
-	result_chan <- [2]string{host, string(json)}
+	result_chan <- [3]string{host, metric, string(json)}
 }
 
 func main() {
@@ -49,7 +49,7 @@ func main() {
 	flag.StringVar(&opts.username, "username", "cirgonus", "username to use for authentication")
 	flag.StringVar(&opts.password, "password", "cirgonus", "password to use for authentication")
 	flag.UintVar(&opts.port, "port", 8000, "port to use for connection")
-	flag.StringVar(&opts.metric, "metric", "", "metric to fetch for polling")
+	flag.StringVar(&opts.metric, "metric", "", "comma-separated list of metrics to fetch for polling")
 	flag.Parse()
 
 	if opts.hosts == "" {
@@ -67,31 +67,49 @@ func main() {
 		os.Exit(1)
 	}
 
-	result_chan := make(chan [2]string)
-	results := make(map[string]string)
-	var keys []string
+	result_chan := make(chan [3]string)
+	results := make(map[string]map[string]string)
+	var host_keys []string
+	var metric_keys []string
+	metric_key_map := make(map[string]bool)
 	hosts := strings.Split(opts.hosts, ",")
+	metrics := strings.Split(opts.metric, ",")
 
 	for {
 		fmt.Println()
 
 		for _, host := range hosts {
-			go poll(host, opts, result_chan)
+			for _, metric := range metrics {
+				go poll(host, metric, opts, result_chan)
+			}
 		}
 
-		for i := 0; i < len(hosts); i++ {
+		for i := 0; i < len(hosts)*len(metrics); i++ {
 			result := <-result_chan
-			results[result[0]] = result[1]
-			keys = append(keys, result[0])
+
+			if results[result[0]] == nil {
+				results[result[0]] = map[string]string{}
+				host_keys = append(host_keys, result[0])
+			}
+
+			results[result[0]][result[1]] = result[2]
+			metric_key_map[result[1]] = true
 		}
 
-		sort.Strings(keys)
+		for m, _ := range metric_key_map {
+			metric_keys = append(metric_keys, m)
+		}
 
-		for _, k := range keys {
-			fmt.Printf("%s: %s\n", k, results[k])
+		sort.Strings(host_keys)
+		sort.Strings(metric_keys)
+
+		for _, m := range metric_keys {
+			for _, h := range host_keys {
+				fmt.Printf("%s %s: %s\n", h, m, results[h][m])
+			}
 		}
 
 		time.Sleep(1 * time.Second)
-		keys = []string{}
+		metric_keys = []string{}
 	}
 }
