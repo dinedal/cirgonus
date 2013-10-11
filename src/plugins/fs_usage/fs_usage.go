@@ -1,4 +1,4 @@
-package disk_usage
+package fs_usage
 
 /*
 // int statfs(const char *path, struct statfs *buf);

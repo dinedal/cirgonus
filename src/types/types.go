@@ -4,7 +4,7 @@ import (
 	"logger"
 	"plugins/command"
 	"plugins/cpu_usage"
-	"plugins/disk_usage"
+	"plugins/fs_usage"
 	"plugins/io_usage"
 	"plugins/load_average"
 	"plugins/mem_usage"
@@ -20,7 +20,7 @@ var Plugins = map[string]func(interface{}, *logger.Logger) interface{}{
 	"net_usage":    net_usage.GetMetric,
 	"io_usage":     io_usage.GetMetric,
 	"record":       record.GetMetric,
-	"disk_usage":   disk_usage.GetMetric,
+	"fs_usage":     fs_usage.GetMetric,
 }
 
 /*

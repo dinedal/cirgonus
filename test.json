@@ -41,7 +41,7 @@
       "Params": "dm-0"
     },
     "/ usage": {
-      "Type": "disk_usage",
+      "Type": "fs_usage",
       "Params": "/"
     }
   }
