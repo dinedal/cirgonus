@@ -44,6 +44,7 @@ var Detectors = map[string]func() []string{
 	"command":      func() []string { return []string(nil) },
 	"net_usage":    net_usage.Detect,
 	"io_usage":     io_usage.Detect,
+	"fs_usage":     fs_usage.Detect,
 }
 
 type ConfigMap struct {
