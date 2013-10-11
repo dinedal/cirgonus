@@ -201,9 +201,11 @@ Results:
 ### fs\_usage
 
 Similar to the other usage metrics, takes a mount point (such as `/`) and
-returns a 3 element tuple represented as a JSON array:
+returns a 4 element tuple represented as a JSON array. The first 3 elements are
+unsigned integers, the last is a boolean representing the read/write status of
+the filesystem.
 
-\[ percent used, free bytes, total bytes \]
+\[ percent used, free bytes, total bytes, read/write? \]
 
 ### command
 

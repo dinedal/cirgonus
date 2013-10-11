@@ -1,3 +1,10 @@
+# 0.3.0 (10/11/2013)
+
+All of these features are covered in the README documentation.
+
+* cstat is now able to query multiple metrics at once from each host.
+* The fs_usage plugin reports on usage stats for a mountpoint, and its read-only status.
+
 # 0.2.0 (10/9/2013)
 
 All of these features are covered in the README documentation.
