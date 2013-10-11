@@ -11,6 +11,14 @@ kernel release due to dependence on system structs and other deep voodoo.
 
 Cirgonus does not need to be run as root to collect its metrics.
 
+Unlike other collectors that use fat tools like `netstat` and `df` which can
+take expensive resources on loaded systems, Cirgonus opts to use the C
+interfaces directly when it can. This allows it to keep a very small footprint;
+with the go runtime, it clocks in just above 5M resident and unnoticeable CPU
+usage at the time of writing. The agent can sustain over 8000qps with a
+benchmarking tool like `wrk`, so it will be plenty fine getting hit once per
+minute.
+
 ## Building Cirgonus
 
 Cirgonus due to its C dependencies must be built on a Linux box. I strongly
@@ -189,6 +197,13 @@ Results:
   }
 }
 ```
+
+### fs\_usage
+
+Similar to the other usage metrics, takes a mount point (such as `/`) and
+returns a 3 element tuple represented as a JSON array:
+
+\[ percent used, free bytes, total bytes \]
 
 ### command
 
