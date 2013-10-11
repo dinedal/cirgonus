@@ -39,6 +39,10 @@
     "dm-0 usage": {
       "Type": "io_usage",
       "Params": "dm-0"
+    },
+    "/ usage": {
+      "Type": "disk_usage",
+      "Params": "/"
     }
   }
 }
