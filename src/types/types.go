@@ -6,6 +6,7 @@ import (
 	"plugins/cpu_usage"
 	"plugins/fs_usage"
 	"plugins/io_usage"
+	"plugins/json_poll"
 	"plugins/load_average"
 	"plugins/mem_usage"
 	"plugins/net_usage"
@@ -21,6 +22,7 @@ var Plugins = map[string]func(interface{}, *logger.Logger) interface{}{
 	"io_usage":     io_usage.GetMetric,
 	"record":       record.GetMetric,
 	"fs_usage":     fs_usage.GetMetric,
+	"json_poll":    json_poll.GetMetric,
 }
 
 /*
