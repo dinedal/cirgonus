@@ -281,6 +281,30 @@ curl http://cirgonus:cirgonus@localhost:8000 -d '{ "Name": "record_example" }'
 
 Which will return `1`.
 
+### json_poll
+
+This allows you to poll a service at a given URL to get metrics from that
+service in json format. Those metrics will be reflected to whomever polls us
+for state in the given poll interval.
+
+Parameter is just the URL. This could be used to "tunnel" metrics from
+a LXC or similar embedded system by chaining cirgonus monitors.
+
+Example:
+
+```json
+"json_poll example": {
+  "Type": "json_poll",
+  "Params": "http://localhost:8080"
+}
+```
+
+```
+$ curl http://cirgonus:cirgonus@localhost:8000 -d '{ "Name": "json_poll example" }'
+{ "test": "stuff" }
+# emitted by the service at http://localhost:8080
+```
+
 ## License
 
 * MIT (C) 2013 Erik Hollensbe
