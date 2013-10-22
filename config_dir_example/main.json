@@ -1,0 +1,8 @@
+{
+  "Listen": ":8000",
+  "Username": "cirgonus",
+  "Password": "cirgonus",
+  "Facility": "daemon",
+  "LogLevel": "info",
+  "PollInterval": 5
+}
