@@ -5,11 +5,99 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"types"
 )
 
-func LoadFromFile(configFile string) (cc types.CirconusConfig, err error) {
+func Load(config string) (types.CirconusConfig, error) {
+	stat, err := os.Stat(config)
+
+	if err != nil {
+		return types.CirconusConfig{}, err
+	}
+
+	if stat.IsDir() {
+		return loadFromDir(config)
+	} else {
+		return loadFromFile(config)
+	}
+}
+
+func loadFromDir(configFile string) (cc types.CirconusConfig, err error) {
+	plugins := make(map[string]types.ConfigMap)
+	var found_main bool
+
+	dir, err := os.Open(configFile)
+
+	if err != nil {
+		return cc, err
+	}
+
+	dirstat, err := dir.Stat()
+
+	if err != nil {
+		return cc, err
+	}
+
+	if !dirstat.IsDir() {
+		panic(configFile + " is not a directory")
+	}
+
+	fi, err := dir.Readdir(0)
+
+	if err != nil {
+		return cc, err
+	}
+
+	for _, entry := range fi {
+		if !entry.IsDir() {
+			file, err := os.Open(filepath.Join(configFile, entry.Name()))
+
+			if err != nil {
+				return cc, err
+			}
+
+			content, err := ioutil.ReadAll(file)
+
+			if err != nil {
+				return cc, err
+			}
+
+			filename := entry.Name()
+
+			if filename == "main.json" {
+				err = json.Unmarshal(content, &cc)
+
+				if err != nil {
+					return cc, err
+				}
+
+				found_main = true
+			} else {
+				parts := strings.Split(filename, ".")
+				un := types.ConfigMap{}
+				err = json.Unmarshal(content, &un)
+
+				if err != nil {
+					return cc, err
+				}
+
+				plugins[parts[0]] = un
+			}
+		}
+	}
+
+	if found_main {
+		cc.Plugins = plugins
+	} else {
+		panic("couldn't find main.json!")
+	}
+
+	return cc, nil
+}
+
+func loadFromFile(configFile string) (cc types.CirconusConfig, err error) {
 	content, err := ioutil.ReadFile(configFile)
 
 	if err != nil {
