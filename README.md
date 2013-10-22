@@ -17,7 +17,7 @@ interfaces directly when it can. This allows it to keep a very small footprint;
 with the go runtime, it clocks in just above 5M resident and unnoticeable CPU
 usage at the time of writing. The agent can sustain over 8000qps with a
 benchmarking tool like `wrk`, so it will be plenty fine getting hit once per
-minute.
+minute, or even once per second.
 
 ## Building Cirgonus
 
@@ -29,6 +29,15 @@ windows if you choose.
 
 To build, type: `make cirgonus`. To build `cstat`, type `make cstat`.
 
+## Running Cirgonus
+
+`cirgonus <config file|dir>` starts cirgonus with the configuration specified
+-- see the file and directory sections below for more information on how the
+configuration looks.
+
+You can also use `cirgonus generate` to generate a config file based on polled
+resources.
+
 ## Config File
 
 A config file is required to run Cirgonus. Check out `test.json` for an example
@@ -37,6 +46,20 @@ of how it should look.
 You can also use `cirgonus generate` to generate a configuration file from
 monitors it can use and devices you have that it can monitor. This can be nice
 for automated deployments.
+
+## Config Directory
+
+Cirgonus can also accept `conf.d` style directory configuration. There is an
+example of this form in the `config_dir_example` directory in this repository.
+
+The rules are pretty basic, but surprising (sorry!):
+
+* `main.json` is the top-level configuration.
+* All other configuration files refer to plugins:
+  * Metric names are named after the filename without the extension (so
+    foo.json becomes metric "foo").
+  * Metrics are plain JSON objects.
+  * Metrics must have a "Type" and "Params" element.
 
 ### Attributes
 
