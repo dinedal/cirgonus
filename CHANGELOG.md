@@ -1,3 +1,12 @@
+# 0.4.0 (10/24/2013)
+
+All of these features are covered in the README documentation.
+
+* JSON HTTP polling plugin allows cirgonus to periodically poll a resource for
+  injectable metrics.
+* Cirgonus can now take conf.d style configuration directories which makes it
+  easier to drive with configuration management.
+
 # 0.3.0 (10/11/2013)
 
 All of these features are covered in the README documentation.
