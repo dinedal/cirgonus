@@ -52,6 +52,9 @@ for automated deployments.
 Cirgonus can also accept `conf.d` style directory configuration. There is an
 example of this form in the `config_dir_example` directory in this repository.
 
+Running cirgonus in this mode is basically the same as a configuration file,
+only you point at a directory instead.
+
 The rules are pretty basic, but surprising (sorry!):
 
 * `main.json` is the top-level configuration.
