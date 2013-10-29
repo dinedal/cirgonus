@@ -264,9 +264,9 @@ This allows you to inject values into cirgonus. When a PUT query is issued with
 a payload that looks like:
 
 ```json
-{ 
+{
   "Name": "record parameter",
-  "Value": "arbitrary json value"
+  "Value": { "key" : "value", "other" : ["data", "of any structure"]}
 }
 ```
 
@@ -279,12 +279,12 @@ Configuration is a bit tricky; see `test.json` or see the below example. Note th
 the metric name and parameter are the same. This is critical to the accurate
 function of this plugin.
 
-For a given metric named "record_example":
+For a given metric named "record_example", create a file named `record_example.json`
 
 ```json
-"record_example": {
+{
   "Type": "record",
-  "Params": "record_example"
+  "Params": null
 }
 ```
 
